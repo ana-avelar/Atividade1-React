@@ -17,11 +17,16 @@ function Header() {
       </div>
 
       <div className="flex items-center gap-3">
-        {mostrarRelogio && <Relogio />}
+        {mostrarRelogio && (
+          <span aria-hidden="true">
+            <Relogio />
+          </span>
+        )}
 
         <button
           onClick={() => setMostrarRelogio(!mostrarRelogio)}
-          className="bg-white/10 text-white px-3 py-2 rounded-lg text-sm hover:bg-white/20"
+          aria-pressed={mostrarRelogio}
+          className="bg-white/10 text-white px-3 py-2 rounded-lg text-sm hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-cinema-bg"
         >
           {mostrarRelogio ? "Esconder relógio" : "Mostrar relógio"}
         </button>

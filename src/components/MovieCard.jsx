@@ -3,7 +3,7 @@
 const coresPorGenero = {
   Ficção: "bg-purple-100 text-purple-700",
   Terror: "bg-red-100 text-red-700",
-  Comédia: "bg-yellow-100 text-yellow-700",
+  Comédia: "bg-yellow-100 text-yellow-800",
   Drama: "bg-blue-100 text-blue-700",
   Animação: "bg-green-100 text-green-700",
 };
@@ -22,8 +22,10 @@ function MovieCard({
 
   return (
     <article
-      className={`bg-cinema-card text-white rounded-xl p-5 shadow-lg hover:scale-[1.02] transition-transform ${
-        assistido ? "opacity-60" : ""
+      className={`rounded-xl p-5 shadow-lg hover:scale-[1.02] transition-transform border ${
+        assistido
+          ? "bg-slate-50 border-slate-200"
+          : "bg-cinema-card border-slate-100"
       }`}
     >
       <div className="flex items-center justify-between mb-3">
@@ -40,22 +42,29 @@ function MovieCard({
 
       <div className="text-4xl mb-2">{emoji}</div>
 
-      <h2 className="text-lg font-bold mb-4">{titulo}</h2>
+      <h2
+        className={`text-lg font-bold mb-4 ${
+          assistido ? "text-slate-500 line-through" : "text-white"
+        }`}
+      >
+        {titulo}
+      </h2>
 
       <div className="flex items-center justify-between">
-        <label className="flex items-center gap-2 text-sm cursor-pointer">
+        <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
           <input
             type="checkbox"
             checked={assistido}
             onChange={onToggle}
-            className="w-4 h-4"
+            className="w-4 h-4 accent-cinema-bg focus:outline-none focus:ring-2 focus:ring-cinema-bg focus:ring-offset-1"
           />
           Assistido
         </label>
 
         <button
           onClick={onRemover}
-          className="text-xs text-red-400 hover:text-red-300 font-semibold"
+          aria-label={`Remover filme: ${titulo}`}
+          className="text-xs text-red-600 hover:text-red-800 font-semibold focus:outline-none focus:ring-2 focus:ring-red-600 rounded px-1"
         >
           Remover
         </button>

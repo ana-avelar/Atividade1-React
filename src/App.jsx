@@ -74,6 +74,7 @@ function App() {
   });
 
   const [filtro, setFiltro] = useState("todos");
+  const [anuncio, setAnuncio] = useState("");
 
   useEffect(() => {
     localStorage.setItem("cinevault-filmes", JSON.stringify(filmes));
@@ -88,20 +89,40 @@ function App() {
         assistido: false,
       },
     ]);
+
+    setAnuncio(`Filme ${novoFilme.titulo} adicionado com sucesso.`);
   }
 
   function alternarAssistido(id) {
+    const filme = filmes.find((item) => item.id === id);
+
+    if (!filme) return;
+
+    const novoStatus = !filme.assistido;
+
     setFilmes((atual) =>
-      atual.map((filme) =>
-        filme.id === id
-          ? { ...filme, assistido: !filme.assistido }
-          : filme
+      atual.map((item) =>
+        item.id === id
+          ? { ...item, assistido: novoStatus }
+          : item
       )
+    );
+
+    setAnuncio(
+      novoStatus
+        ? `Filme ${filme.titulo} marcado como assistido.`
+        : `Filme ${filme.titulo} marcado como não assistido.`
     );
   }
 
   function removerFilme(id) {
+    const filme = filmes.find((item) => item.id === id);
+
     setFilmes((atual) => atual.filter((filme) => filme.id !== id));
+
+    if (filme) {
+      setAnuncio(`Filme ${filme.titulo} removido.`);
+    }
   }
 
   const filmesFiltrados = filmes.filter((filme) => {
@@ -118,9 +139,27 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col">
+      <a
+        href="#conteudo"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-cinema-bg text-white px-4 py-2 rounded-lg z-50"
+      >
+        Pular para o conteúdo
+      </a>
+
       <Header />
 
-      <main className="flex-1 px-8 py-8">
+      <div
+        aria-live="polite"
+        role="status"
+        className="sr-only"
+      >
+        {anuncio}
+      </div>
+
+      <main
+        id="conteudo"
+        className="flex-1 px-8 py-8"
+      >
         <MovieForm onAdicionar={adicionarFilme} />
 
         <div className="flex items-center justify-between mb-6">
@@ -129,12 +168,17 @@ function App() {
           </h2>
         </div>
 
-        <div className="flex gap-2 mb-6">
+        <div
+          role="group"
+          aria-label="Filtrar filmes"
+          className="flex gap-2 mb-6"
+        >
           {FILTROS.map((opcao) => (
             <button
               key={opcao.valor}
               onClick={() => setFiltro(opcao.valor)}
-              className={`px-3 py-2 rounded-lg font-semibold ${
+              aria-pressed={filtro === opcao.valor}
+              className={`px-3 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-cinema-bg focus:ring-offset-2 ${
                 filtro === opcao.valor
                   ? "bg-cinema-bg text-white"
                   : "bg-white text-slate-700 hover:bg-slate-200"
